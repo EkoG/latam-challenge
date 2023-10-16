@@ -7,7 +7,7 @@ import xgboost as xgb
 import yaml
 import logging as LOGGER
 
-
+# Get settings file as SETTINGS
 with open('challenge/settings.yaml', 'r') as f:
     SETTINGS = yaml.safe_load(f)
 
