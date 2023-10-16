@@ -13,12 +13,9 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2
     
-    - id: 'auth'
-      name: 'Authenticate to Google Cloud'
-      uses: 'google-github-actions/auth@v1'
-      with:
-        workload_identity_provider: 'projects/123456789/locations/global/workloadIdentityPools/my-pool/providers/my-provider'
-        service_account: 'my-service-account@my-project.iam.gserviceaccount.com'
+    - name: Authenticate to Google Cloud
+      uses: google-github-actions/auth@v1.1.1
+            
 
     - name: Set up Cloud SDK
       uses: google-github-actions/setup-gcloud@v0.2.1

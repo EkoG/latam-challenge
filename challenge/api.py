@@ -1,40 +1,37 @@
 import fastapi
-from fastapi import Request
-from fastapi.exceptions import RequestValidationError
 from pydantic import BaseModel, validator
-from .model import DelayModel
 import pandas as pd
 from typing import List
+from challenge import model
 
 app = fastapi.FastAPI()
-model = DelayModel()
+model = model.DelayModel()
 
 class FlightValidation(BaseModel):
-    
-    OPERA: str
     TIPOVUELO: str
-    MES: int
-    Fecha_I: str
-    Fecha_O: str
-
+    MES: int    
+    OPERA: str
+    
     @validator("TIPOVUELO")
-    def validate_flight_type(cls, value):
-        if value not in ["I", "N"]:
-            raise ValueError("Flight type is invalid")
+    def validate_TIPOVUELO(cls, value):
+        if value not in ["N", "I"]:
+            raise fastapi.HTTPException(status_code=400, detail=str(ValueError))
         return value
     
     @validator("MES")
-    def month_validation(cls, value):
+    def validate_MES(cls, value):
         if value not in range(1, 13):
-            raise ValueError("Invalid month")
+            raise fastapi.HTTPException(status_code=400, detail=str(ValueError))
         return value
 
-@app.exception_handler(RequestValidationError)
-async def validation_exception_handler(request: Request, exc: RequestValidationError):
-    return fastapi.responses.JSONResponse(
-        status_code=400,
-        content={"detail": exc.errors()}
-    )
+
+class FlightRequest(BaseModel):
+    flights: List[FlightValidation]
+
+
+class FlightPrediction(BaseModel):
+    predict: List[int]
+
 
 @app.get("/health", status_code=200)
 async def get_health() -> dict:
@@ -42,16 +39,19 @@ async def get_health() -> dict:
         "status": "OK"
     }
 
-class Flights(BaseModel):
-    flights: List[FlightValidation]
-
 @app.post("/predict", status_code=200)
-async def post_predict(data: Flights) -> dict:
+async def post_predict(data: FlightRequest) -> FlightPrediction:
+    # Get Request
+    f_type = [flight.TIPOVUELO for flight in data.flights]
+    f_month = [flight.MES for flight in data.flights]
+    f_operator = [flight.OPERA for flight in data.flights]
+    # Create DataFrame
+    request = {"MES": f_month, "OPERA": f_operator, "TIPOVUELO": f_type}
+    features = pd.DataFrame(request)
     try:
-        df = pd.DataFrame([flight.dict() for flight in data.flights])
-        df.rename(columns={'Fecha_I': 'Fecha-I', 'Fecha_O': 'Fecha-O'}, inplace=True)
-        features = model.preprocess(df)
-        predictions = model.predict(features)
-        return {"predict": predictions}
-    except Exception as e:
-        return {"error": "An error occurred during processing data", "detail": str(e)}
+        features = model.preprocess(features)
+    except ValueError as e:
+        raise fastapi.HTTPException(status_code=400, detail=str(e))
+    # Get Prediction
+    predictions = model.predict(features)
+    return  FlightPrediction(predict=predictions)

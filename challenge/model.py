@@ -83,18 +83,17 @@ class DelayModel:
             pd.DataFrame: features.
         """
         LOGGER.info("Data preprocessing started")
-
-        data['period_day'] = data['Fecha-I'].apply(self._get_period_day)
-        data['high_season'] = data['Fecha-I'].apply(self._is_high_season)
-        data['min_diff'] = data.apply(self._get_min_diff, axis = 1)
-        data['delay'] = np.where(data['min_diff'] > THRESHOLD, 1, 0)
-
         # Get features
         features = self._features(data)
-        
+
         if target_column:
+            LOGGER.info("preprocessing target")
+            data['period_day'] = data['Fecha-I'].apply(self._get_period_day)
+            data['high_season'] = data['Fecha-I'].apply(self._is_high_season)
+            data['min_diff'] = data.apply(self._get_min_diff, axis = 1)
+            data['delay'] = np.where(data['min_diff'] > THRESHOLD, 1, 0)
             return features, data[[target_column]] 
-        
+
         LOGGER.info("Data preprocessing completed successfully")
         return features
      
