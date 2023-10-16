@@ -4,60 +4,17 @@ import joblib
 import numpy as np
 import pandas as pd
 import xgboost as xgb
+import yaml
 import logging as LOGGER
 
+
+with open('challenge/settings.yaml', 'r') as f:
+    SETTINGS = yaml.safe_load(f)
 
 LOGGER.basicConfig(
      level=LOGGER.INFO, 
      format= '[%(asctime)s] {%(pathname)s:%(lineno)d} %(levelname)s - %(message)s',
      datefmt='%H:%M:%S')
-
-TOP_FEATURES = [
-        "OPERA_Latin American Wings", 
-        "MES_7",
-        "MES_10",
-        "OPERA_Grupo LATAM",
-        "MES_12",
-        "TIPOVUELO_I",
-        "MES_4",
-        "MES_11",
-        "OPERA_Sky Airline",
-        "OPERA_Copa Air"
-    ]
-
-THRESHOLD = 15
-
-OPERATORS = [
-    "Grupo LATAM",
-    "Sky Airline",
-    "Aerolineas Argentinas",
-    "Copa Air",
-    "Latin American Wings",
-    "Avianca",
-    "JetSmart SPA",
-    "Gol Trans",
-    "American Airlines",
-    "Air Canada",
-    "Iberia",
-    "Delta Air",
-    "Air France",
-    "Aeromexico",
-    "United Airlines",
-    "Oceanair Linhas Aereas",
-    "Alitalia",
-    "K.L.M.",
-    "British Airways",
-    "Qantas Airways",
-    "Lacsa",
-    "Austral",
-    "Plus Ultra Lineas Aereas",
-]
-
-FLIGHT_TYPES = ["I", "N"]
-
-MONTHS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
-
-
 
 
 class DelayModel:
@@ -91,7 +48,7 @@ class DelayModel:
             data['period_day'] = data['Fecha-I'].apply(self._get_period_day)
             data['high_season'] = data['Fecha-I'].apply(self._is_high_season)
             data['min_diff'] = data.apply(self._get_min_diff, axis = 1)
-            data['delay'] = np.where(data['min_diff'] > THRESHOLD, 1, 0)
+            data['delay'] = np.where(data['min_diff'] > SETTINGS['THRESHOLD'], 1, 0)
             return features, data[[target_column]] 
 
         LOGGER.info("Data preprocessing completed successfully")
@@ -110,10 +67,10 @@ class DelayModel:
             features (pd.DataFrame): preprocessed data.
             target (pd.DataFrame): target.
         """
-        label_0_len = len(target[target["delay"] == 0])
-        label_1_len = len(target[target["delay"] == 1])
+        label_0 = len(target[target["delay"] == 0])
+        label_1 = len(target[target["delay"] == 1])
         self._model.set_params(
-            scale_pos_weight=label_0_len/label_1_len
+            scale_pos_weight=label_0/label_1
         )
         self._model.fit(features, target)
         try:
@@ -231,9 +188,9 @@ class DelayModel:
         """
 
         # Convert values into categorical values
-        data["MES"] = pd.Categorical(data["MES"], categories=MONTHS)
-        data["OPERA"] = pd.Categorical(data["OPERA"], categories=OPERATORS)
-        data["TIPOVUELO"] = pd.Categorical(data["TIPOVUELO"], categories=FLIGHT_TYPES)
+        data["MES"] = pd.Categorical(data["MES"], categories=[month for month in range(1, 13)])
+        data["OPERA"] = pd.Categorical(data["OPERA"], categories=SETTINGS['OPERATORS'])
+        data["TIPOVUELO"] = pd.Categorical(data["TIPOVUELO"], categories=SETTINGS['FLIGHT_TYPES'])
 
         # Get the dummy variables for categories
         features = pd.concat(
@@ -245,7 +202,7 @@ class DelayModel:
             axis=1,
         )
 
-        features = features[TOP_FEATURES]
+        features = features[SETTINGS['TOP_FEATURES']]
         LOGGER.info("Features completed")
         return features
     

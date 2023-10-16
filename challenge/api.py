@@ -1,8 +1,12 @@
 import fastapi
 from pydantic import BaseModel, validator
 import pandas as pd
+import yaml
 from typing import List
 from challenge import model
+
+with open('challenge/settings.yaml', 'r') as f:
+    SETTINGS = yaml.safe_load(f)
 
 app = fastapi.FastAPI()
 model = model.DelayModel()
@@ -14,7 +18,7 @@ class FlightValidation(BaseModel):
     
     @validator("TIPOVUELO")
     def validate_TIPOVUELO(cls, value):
-        if value not in ["N", "I"]:
+        if value not in SETTINGS['FLIGHT_TYPES']:
             raise fastapi.HTTPException(status_code=400, detail=str(ValueError))
         return value
     
@@ -23,7 +27,7 @@ class FlightValidation(BaseModel):
         if value not in range(1, 13):
             raise fastapi.HTTPException(status_code=400, detail=str(ValueError))
         return value
-
+    
 
 class FlightRequest(BaseModel):
     flights: List[FlightValidation]
