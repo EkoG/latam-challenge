@@ -1,0 +1,39 @@
+.gcloudignore
+.git
+.gitignore
+
+# General files and directories
+
+.DS_Store
+.venv/
+.vscode/
+.coverage
+pytest_cache/
+\*.pyc
+
+# GitHub Actions
+
+.github/
+workflows/
+
+# Documentation and explorations
+
+docs/
+\*.ipynb
+
+# Test reports and outputs
+
+reports/
+
+# Development configuration and requirements files
+
+requirements-dev.txt
+requirements-test.txt
+
+# Tests
+
+tests/
+
+# Ignored by the build system
+
+/setup.cfg
