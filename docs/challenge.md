@@ -14,7 +14,7 @@ The model is implemented in Model.py, using the XGBoost classifier algorithm. XG
 
 ## Model Selection
 
-Accordingly with the challenge both models presented in the acted the same way with the training data. Despite the results of both algorithm XGboost and LogisticRegression the choise of xgb_model_2 was based on its advantages i.e. designed to be fast and efficient, even for large datasets. This would help to make the code extensible following SOLID principles.
+Accordingly with the challenge both models presented in the Jupyter Notebook, both acted the same way with the training data. Despite the results of both algorithm XGboost and LogisticRegression the choise of xgb_model_2 was based on its advantages i.e. designed to be fast and efficient, even for large datasets. This would help to make the code extensible following SOLID principles.
 
 ## Part II: API deployment
 
