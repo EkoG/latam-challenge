@@ -26,8 +26,8 @@ jobs:
 
       - name: Set Cloud SDK
         uses: google-github-actions/setup-gcloud@v1
-        
-      - id: "Deploy App to Run Engine"
+
+      - id: "deploy"
         uses: "google-github-actions/deploy-appengine@v1"
         with:
           project_id: "615507349246"
