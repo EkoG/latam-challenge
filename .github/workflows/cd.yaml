@@ -11,25 +11,25 @@ jobs:
   job_id:
     # ...
     deploy:
-    runs-on: ubuntu-latest
+      runs-on: ubuntu-latest
 
-    # Add "id-token" with the intended permissions.
-    permissions:
-      contents: 'read'
-      id-token: 'write'
+      # Add "id-token" with the intended permissions.
+      permissions:
+        contents: 'read'
+        id-token: 'write'
 
-    steps:
-    - uses: 'actions/checkout@v3'
+      steps:
+      - uses: 'actions/checkout@v3'
 
-    - id: 'auth'
-      name: 'Authenticate to Google Cloud'
-      uses: 'google-github-actions/auth@v1'
-      with:
-        workload_identity_provider: 'projects/615507349246/locations/global/workloadIdentityPools/github-actions/providers/github-actions'
-        service_account: 'github-actions@latam-airlines-challange.iam.gserviceaccount.com'
-    
-    - name: Set Cloud SDK
-      uses: google-github-actions/setup-gcloud@v0.2.1
+      - id: 'auth'
+        name: 'Authenticate to Google Cloud'
+        uses: 'google-github-actions/auth@v1'
+        with:
+          workload_identity_provider: 'projects/615507349246/locations/global/workloadIdentityPools/github-actions/providers/github-actions'
+          service_account: 'github-actions@latam-airlines-challange.iam.gserviceaccount.com'
+      
+      - name: Set Cloud SDK
+        uses: google-github-actions/setup-gcloud@v0.2.1
 
-    - name: Deploy App to Run Engine
-      run: gcloud app deploy app.yaml --quiet
+      - name: Deploy App to Run Engine
+        run: gcloud app deploy app.yaml --quiet
