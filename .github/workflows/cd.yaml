@@ -8,6 +8,8 @@ jobs:
 
   job_id:
     # ...
+    deploy:
+    runs-on: ubuntu-latest
 
     # Add "id-token" with the intended permissions.
     permissions:
