@@ -1,4 +1,11 @@
+on:
+  workflow_run:
+    workflows: ['Continuos Integration']
+    types:
+      - completed
+
 jobs:
+
   job_id:
     # ...
 
@@ -16,3 +23,9 @@ jobs:
       with:
         workload_identity_provider: 'projects/615507349246/locations/global/workloadIdentityPools/github-actions/providers/github-actions'
         service_account: 'github-actions@latam-airlines-challange.iam.gserviceaccount.com'
+    
+    - name: Set up Cloud SDK
+      uses: google-github-actions/setup-gcloud@v0.2.
+
+    - name: Deploy to App to Run Engine
+      run: gcloud app deploy app.yaml --quiet
