@@ -1,10 +1,10 @@
 name: 'Continuos Deployment'
 
 on:
-    workflow_dispatch:
-    push:
-      branches:
-        - "main"
+    workflow_run:
+    workflows: ['Continuous Integration']
+    types:
+      - completed
 
 jobs:
   # ...
@@ -21,8 +21,8 @@ jobs:
         name: 'Authenticate to Google Cloud'
         uses: 'google-github-actions/auth@v1'
         with:
-          workload_identity_provider: 'projects/615507349246/locations/global/workloadIdentityPools/github-actions/providers/github-actions'
-          service_account: 'github-actions@latam-airlines-challange.iam.gserviceaccount.com'
+          workload_identity_provider: ${{ secrets.WORKLOAD_ID }}
+          service_account: ${{ secrets.SERVICE_ACCOUNT }}
 
       - name: Set Cloud SDK
         uses: google-github-actions/setup-gcloud@v1
