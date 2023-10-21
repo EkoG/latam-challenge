@@ -33,4 +33,5 @@ jobs:
         uses: google-github-actions/deploy-appengine@v1
         with:
           project_id: 'latam-airlines-challange'
-          deliverables: 'app.yaml' 
+          deliverables: 'app.yaml'
+          credentials: ${{ secrets.GCP_CREDENTIALS }} 
