@@ -17,7 +17,8 @@ jobs:
     steps:
       - name: 'Checkout'
         uses: 'actions/checkout@v3'
-       - id: 'auth'
+      - name: 'Authentication'
+        id: 'auth'
         name: 'Authenticate to GCP'
         uses: 'google-github-actions/auth@v1'
         with:
