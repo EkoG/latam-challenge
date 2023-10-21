@@ -21,7 +21,6 @@ jobs:
         name: 'Authenticate to Google Cloud'
         uses: 'google-github-actions/auth@v1'
         with:
-          # token_format: "access_token"
           workload_identity_provider: 'projects/615507349246/locations/global/workloadIdentityPools/github-actions/providers/github-actions'
           service_account: 'github-actions@latam-airlines-challange.iam.gserviceaccount.com'
 
@@ -34,4 +33,3 @@ jobs:
         with:
           project_id: 'latam-airlines-challange'
           deliverables: 'app.yaml'
-          credentials: ${{ secrets.GCP_CREDENTIALS }} 
