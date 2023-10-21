@@ -1,10 +1,10 @@
 name: 'Continuos Deployment'
 
 on:
-    workflow_run:
-      workflows: ['Continuous Integration']
-      types:
-        - completed
+  workflow_run:
+    workflows: ['Continuous Integration']
+    types:
+      - completed
 
 jobs:
   # ...
