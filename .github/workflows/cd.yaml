@@ -18,10 +18,11 @@ jobs:
       - name: 'Checkout'
         uses: 'actions/checkout@v3'
       - id: 'auth'
-        name: 'Authenticate to GCP'
+        name: 'Authenticate to Google Cloud'
         uses: 'google-github-actions/auth@v1'
         with:
-          credentials_json: '${{ secrets.GCP_CREDENTIALS }}'
+          workload_identity_provider: 'projects/615507349246/locations/global/workloadIdentityPools/github-actions/providers/github-actions'
+          service_account: 'github-actions@latam-airlines-challange.iam.gserviceaccount.com'
 
       - name: Set Cloud SDK
         uses: google-github-actions/setup-gcloud@v1
