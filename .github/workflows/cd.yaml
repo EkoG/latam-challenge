@@ -30,5 +30,4 @@ jobs:
       - id: 'deploy'
         uses: google-github-actions/deploy-appengine@v1
         with:
-          project_id: '615507349246'
           deliverables: 'app.yaml' 
